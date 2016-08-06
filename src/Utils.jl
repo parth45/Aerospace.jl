@@ -160,26 +160,6 @@ function Atmosphere(alt, vmag)
 
     ###########################################################################
     function ECEF2LLH(rm_ecef)
-        # ECEF2LLH  Converts cartesian coordinates to ellipsoidal.
-        #   Uses direct algorithm in B.R. Bowring, "The accuracy of
-        #   geodetic latitude and height equations", Survey
-        #   Review, v28 #218, October 1985, pp.202-206.  Vectorized.
-        #   See also XYZ2ELL, XYZ2ELL2.
-        # Version: 2011-02-19
-        # Useage:  [lat,lon,h]=xyz2ell3(X,Y,Z,a,b,e2)
-        #          [lat,lon,h]=xyz2ell3(X,Y,Z)
-        # Input:   X \
-        #          Y  > vectors of cartesian coordinates in CT system (m)
-        #          Z /
-        #          a   - ref. ellipsoid major semi-axis (m); default GRS80
-        #          b   - ref. ellipsoid minor semi-axis (m); default GRS80
-        #          e2  - ref. ellipsoid eccentricity squared; default GRS80
-        # Output:  lat - vector of ellipsoidal latitudes (radians)
-        #          lon - vector of ellipsoidal longitudes (radians)
-        #          h   - vector of ellipsoidal heights (m)
-        #        #% Copyright (c) 2011, Michael R. Craymer
-        # All rights reserved.
-        # Email: mike@craymer.com
 
         X = rm_ecef[1];
         Y = rm_ecef[2];
