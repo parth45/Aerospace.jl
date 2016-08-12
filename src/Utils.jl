@@ -173,12 +173,12 @@ function Atmosphere(alt, vmag)
         
         p = sqrt( X.*X + Y.*Y);
         r = sqrt( p.*p + Z.*Z);
-        u = atan( b.*Z.*( 1 + ee.*bb./r)./(aa.*p));
+        u = atan( bb.*Z.*( 1 + ee.*bb./r)./(aa.*p));
 
         # Latitude
         lat = atan( (Z + ee.*bb.*sin(u).^3)./( p - e2.*aa.*cos(u).^3) );
 
-        v = aa./sqrt( 1 - e2.*sin(lat).^2 );
+        v = aa./sqrt( 1.0 - e2.*sin(lat).^2 );
 
         # Altitude
         alt = p.*cos(lat) + Z.*sin(lat) - aa*aa./v;
@@ -266,12 +266,12 @@ function Atmosphere(alt, vmag)
 
     ###########################################################################
 
-function QuatDerivative(quat, wb_body)
+function QuatDerivative(quat::Array{Float64,1}, wb_body::Array{Float64,1} )
     pp = wb_body[1];
     qq = wb_body[2];
     rr = wb_body[3];
 
-    lam = 1 - quat'*quat;
+    lam = 1.0 - norm(quat)^2;
 
     BB = [
         0   -pp   -qq    -rr
@@ -279,7 +279,7 @@ function QuatDerivative(quat, wb_body)
         qq  -rr    0      pp
         rr   qq   -pp     0
     ];
-    
+
     kgain = 100.0;
     quatdot = 0.5*BB*quat + kgain*lam*quat;
     
@@ -313,3 +313,21 @@ function QuatToDCM(quat)
 end
 
 ###########################################################################
+function ComputeEuler( Tr_bi::Array{Float64,2} )
+
+    t11 = Tr_bi[1,1];
+    t12 = Tr_bi[1,2];
+    t13 = Tr_bi[1,3];
+    t23 = Tr_bi[2,3];
+    t33 = Tr_bi[3,3];
+    
+    pitch = asin(-t13);
+    heading = atan2(t12,t11);
+    roll = atan2(t23,t33);
+
+    euler = [roll; pitch; heading];
+
+    return euler;
+end
+
+    

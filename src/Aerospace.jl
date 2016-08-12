@@ -45,6 +45,7 @@ export
     Angle_Rates,
     Quaternions,
     Motors,
+    NavStates,
 
     ## Transformations
     TR1,
@@ -68,7 +69,10 @@ export
     QuatInit,
     QuatInit!,
     QuatDerivative,
-    QuatToDCM
+    QuatToDCM,
+    
+    ## Euler Angle
+    ComputeEuler
 
 
 type QuadControl
@@ -146,6 +150,15 @@ type Aero6DOF
     quat_bi::Quaternions
     wmotor_vec::Motors
     xo::Array{Float64,1}
+end
+
+type NavStates
+    time::Float64
+    wgs_pos::WGS_Pos
+    velocity::Velocity_States
+    angle_rates::Angle_Rates
+    euler::Euler_Angles
+    quat::Quaternions
 end
 
 include("Utils.jl");
