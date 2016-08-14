@@ -156,7 +156,9 @@ type NavStates
     time::Float64
     wgs_pos::WGS_Pos
     velocity::Velocity_States
-    angle_rates::Angle_Rates
+    rate_estimate::Angle_Rates
+    rate_meas::Array{Float64,1}
+    accel_meas::Array{Float64,1}
     euler::Euler_Angles
     quat::Quaternions
 end
