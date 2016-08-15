@@ -46,6 +46,7 @@ export
     Quaternions,
     Motors,
     NavStates,
+    Actuator,
 
     ## Transformations
     TR1,
@@ -72,7 +73,11 @@ export
     QuatToDCM,
     
     ## Euler Angle
-    ComputeEuler
+    ComputeEuler,
+
+    ## Actuator Functions
+    Initialize_Act,
+    Update_Act
 
 
 type QuadControl
@@ -163,6 +168,20 @@ type NavStates
     quat::Quaternions
 end
 
+type Actuator
+    time::Float64
+    dt::Float64
+    wn::Float64
+    zeta::Float64
+    position::Float64
+    rate::Float64
+    pos_lim_pos::Float64
+    pos_lim_neg::Float64
+    rate_lim_pos::Float64
+    rate_lim_neg::Float64
+end
+
 include("Utils.jl");
+include("Actuator.jl");
 
 end # module
