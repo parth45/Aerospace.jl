@@ -77,22 +77,17 @@ export
 
     ## Actuator Functions
     Initialize_Act,
-    Update_Act
+    Update_Act,
 
+    ## Airframe Functions
+    InitPos,
+    InitVel,
+    InitEuler,
+    InitAngleRates,
+    Mass_Props,
+    Airframe_Initialize,
+    Airframe_Update
 
-type QuadControl
-    motor1_cmd::Float64
-    motor2_cmd::Float64
-    motor3_cmd::Float64
-    motor4_cmd::Float64
-end
-
-type Motors
-    wmotor1::Float64
-    wmotor2::Float64
-    wmotor3::Float64
-    wmotor4::Float64
-end
 
 type WGS_Pos
     time::Float64
@@ -150,10 +145,8 @@ type Aero6DOF
     velocity::Velocity_States
     euler::Euler_Angles
     angle_rates::Angle_Rates
-    control_vec::QuadControl
     massprops::MassProps
     quat_bi::Quaternions
-    wmotor_vec::Motors
     xo::Array{Float64,1}
 end
 
@@ -183,5 +176,6 @@ end
 
 include("Utils.jl");
 include("Actuator.jl");
+include("Airframe6DOF.jl");
 
 end # module
