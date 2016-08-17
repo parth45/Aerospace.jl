@@ -86,8 +86,12 @@ export
     InitAngleRates,
     Mass_Props,
     Airframe_Initialize,
-    Airframe_Update
+    Airframe_Update,
 
+    ## Interpolation Functions
+    interp1,
+    interp2,
+    interp3
 
 type WGS_Pos
     time::Float64
@@ -177,5 +181,6 @@ end
 include("Utils.jl");
 include("Actuator.jl");
 include("Airframe6DOF.jl");
+include("Interpolation.jl");
 
 end # module
