@@ -330,4 +330,8 @@ function ComputeEuler( Tr_bi::Array{Float64,2} )
     return euler;
 end
 
-    
+###########################################################################
+function pause()
+    print("Program Paused:  Press any key to Continue");
+    return chomp(readline());
+end

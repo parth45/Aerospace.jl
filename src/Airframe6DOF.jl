@@ -12,10 +12,6 @@
 #
 ############################################################################
 
-
-using Aerospace
-
-############################################################################
 # Initialize Position
 function InitPos( time, latitude, longitude, altitude )
 
@@ -94,31 +90,12 @@ function InitAngleRates(wb_bn_body::Array{Float64,1}, position::WGS_Pos, euler::
     return angle_rates
 end
 
-
-
-############################################################################
-# Mass Properties
-#    This function provides the mass properties for a simple quadrotor
-function Mass_Props()
-    mass = 0.23;  # Kg
-    II = [
-        10.0   0    0
-        0.0    50.0   0.0
-        0.0     0.0  50.0
-    ];
-    cg_vec_body = [0;0;0.0];
-
-
-    massprops = MassProps(mass,II,cg_vec_body);
-    return massprops;
-end
-
 ############################################################################
 # Initialize
 function Airframe_Initialize( tsim::Float64,
                      time::Float64, dt::Float64,
                      position::WGS_Pos, velocity::Velocity_States,
-                     euler::Euler_Angles, angle_rates::Angle_Rates)
+                     euler::Euler_Angles, angle_rates::Angle_Rates, mass_props::MassProps)
 
     ## Time Computations
     dt_eci = time - tsim;
@@ -136,9 +113,6 @@ function Airframe_Initialize( tsim::Float64,
     quat = QuatInit( Tr_bi );
     quat_bi = Quaternions(quat[1], quat[2], quat[3], quat[4] );
 
-    ## Mass Properties
-    mass_props = Mass_Props();
-
     xo = [ position.rm_eci; velocity.vm_eci; angle_rates.wb_bi_body; quat];
 
     ## Quad Rotor Intialization
@@ -153,7 +127,7 @@ function Airframe_Update(airframe::Aero6DOF,
                 ftot_body::Array{Float64,1},
                 mtot_body::Array{Float64,1},
                 )
-    
+    dt = airframe.dt;
     airframe_out = airframe;
 
     ## Time
@@ -211,12 +185,8 @@ function Airframe_Update(airframe::Aero6DOF,
     fgrav_body = mass*grav_body;
 
     ## Total Forces in Body Frame
-    ftot_body = f1_body + f2_body + f3_body + f4_body;
     acc_meas_body = ftot_body/mass;
     ftot_eci = Tr_ib*ftot_body;
-
-    ## Total Moments in Body Frame
-    mtot_body = m1_body + m2_body + m3_body + m4_body;
 
     ## Computing Derivatives
     dx_pos = vm_eci;
@@ -225,7 +195,7 @@ function Airframe_Update(airframe::Aero6DOF,
     dx_quat = QuatDerivative(quat_bi_vec, wb_bi_body)
 
     ## Derivative Vector
-    dx = [dx_pos; dx_vel; dx_wb; dx_quat; dwm1; dwm2; dwm3; dwm4];
+    dx = [dx_pos; dx_vel; dx_wb; dx_quat];
 
     ## Euler Integration
     xo = xo + dt*dx;
