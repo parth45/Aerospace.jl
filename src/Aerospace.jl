@@ -71,6 +71,7 @@ export
     QuatInit!,
     QuatDerivative,
     QuatToDCM,
+    PauseJulia,
     
     ## Euler Angle
     ComputeEuler,

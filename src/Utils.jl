@@ -331,7 +331,11 @@ function ComputeEuler( Tr_bi::Array{Float64,2} )
 end
 
 ###########################################################################
-function pause()
-    print("Program Paused:  Press any key to Continue");
-    return chomp(readline());
+function PauseJulia()
+    print("Program Paused:  Press any key to Continue, or press q to quit: ");
+    xx = readline();
+    if xx == "q"
+        return;
+    end
+    return
 end
