@@ -331,11 +331,22 @@ function ComputeEuler( Tr_bi::Array{Float64,2} )
 end
 
 ###########################################################################
-function PauseJulia()
+function Pause()
     print("Program Paused:  Press any key to Continue, or press q to quit: ");
     xx = readline();
-    if xx == "q"
-        return;
+    println(xx)
+    if xx == "q\n"
+        error("Terminated Program");
     end
+    return
+end
+
+###########################################################################
+function CloseAll()
+
+    for i = 1:500
+        close();
+    end
+    
     return
 end

@@ -46,12 +46,6 @@ function Quad_Forces(motor_array::Motors)
     m3_body = m3_body + cross(r3_arm_body, f3_body);
     m4_body = m4_body + cross(r4_arm_body, f4_body);
 
-    println(m1_body)
-    println(m2_body)
-    println(m3_body)
-    println(m4_body)
-    PauseJulia()
-
     ## Creating Quad Forces Structure
     quadforces = QuadForces(f1_body,
                             f2_body,

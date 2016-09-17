@@ -19,7 +19,7 @@ function Mass_Props()
         2.32  0.0    0.0
         0.0   2.32   0.0
         0.0   0.0    4.0
-    ]; ## kg-m^2
+    ]*10.0^-3; ## kg-m^2
     
     cg_vec_body = [0;0;0.0];
     
@@ -43,7 +43,7 @@ function QuadInit( time::Float64, dt::Float64, position_init::WGS_Pos, vel_init:
     nav_state = NavStates( time, position, velocity, rate_init, zvec, zvec, euler, quad_airframe.quat_bi );
    
     # Motor Initialization
-    wn = 180.0;
+    wn = 220.0;
     zeta = 0.707;
     rpm_pos_lim = 100000.0*2.0*pi;
     rpm_neg_lim = 0.0;
@@ -83,11 +83,11 @@ function QuadInit( time::Float64, dt::Float64, position_init::WGS_Pos, vel_init:
     motor_array = Motors(motor1, motor2, motor3, motor4);
 
     # Initial Motor Commands
-    zz = 0.0;
+    zz = 5000.0;
     motorCmd = MotorCmd(zz, zz, zz, zz);
    
     ## Software Initialization
-    swMsg = Initialize_SW(time, nav_state);
+    swMsg = Initialize_SW(time, dt, nav_state);
     
     # Creating Quadrotor Structure
     quad_rotor = Quadrotor( time, dt, quad_airframe, motor_array, motorCmd, swMsg);
@@ -98,12 +98,24 @@ end
 
 ############################################################################
 # Quadrotor Update
-function QuadUpdate(quad::Quadrotor)
+@debug function QuadUpdate(quad::Quadrotor)
 
     quad_rotor = quad;
 
+    ## Extracting Motor Commands
     motorcmd = quad_rotor.motorCmd;
-    nav_state = quad_rotor.software.softwareTM.navstates;
+
+    ## Taking Measurements
+    time = quad_rotor.time = quad_rotor.dt;
+    quad_rotor.time = time;
+    position = quad_rotor.airframe.position;
+    velocity = quad_rotor.airframe.velocity;
+    rate = quad_rotor.airframe.angle_rates;
+    rate_meas = quad_rotor.airframe.angle_rates.wb_bi_body;
+    accel_meas = quad_rotor.airframe.accel_meas;
+    euler = quad_rotor.airframe.euler;
+    quat_bi = euler, quad_rotor.airframe.quat_bi;
+    nav_state = NavStates( time, position, velocity, rate, rate_meas, accel_meas, euler, quat_bi );
     
     # Parameter Update
     motor_array = quad.motors;
@@ -139,9 +151,6 @@ function QuadUpdate(quad::Quadrotor)
         QuadForceArray.m2body +
         QuadForceArray.m3body +
         QuadForceArray.m4body;
-
-    println(ftot_rotor_body);
-    println(mtot_rotor_body);
 
     # Airframe Update
     quad_rotor.airframe = Airframe_Update(quad_rotor.airframe, ftot_rotor_body, mtot_rotor_body );

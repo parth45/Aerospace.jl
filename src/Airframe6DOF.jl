@@ -113,10 +113,12 @@ function Airframe_Initialize( tsim::Float64,
     quat = QuatInit( Tr_bi );
     quat_bi = Quaternions(quat[1], quat[2], quat[3], quat[4] );
 
+    zz = [0.0;0.0;0.0];
+    
     xo = [ position.rm_eci; velocity.vm_eci; angle_rates.wb_bi_body; quat];
 
     ## Quad Rotor Intialization
-    airframe_init = Aero6DOF(time, dt, position, velocity, euler, angle_rates, mass_props, quat_bi, xo);
+    airframe_init = Aero6DOF(time, dt, position, velocity, euler, angle_rates, zz,  mass_props, quat_bi, xo);
 
     return airframe_init
 end
@@ -184,10 +186,16 @@ function Airframe_Update(airframe::Aero6DOF,
     grav_ned = Tr_nb*grav_body;
     fgrav_body = mass*grav_body;
 
+    println("grav_ned = ", grav_ned);
+    println("mass = ",mass);   
+    
     ## Total Forces in Body Frame
+    println("ftot_body = ",ftot_body);
+    println("fgrav_body = ",fgrav_body);
     acc_meas_body = ftot_body/mass;
     ftot_eci = Tr_ib*ftot_body;
-
+    airframe_out.accel_meas = acc_meas_body;
+    
     ## Computing Derivatives
     dx_pos = vm_eci;
     dx_vel = Tr_ib*(1.0/mass*( ftot_body + fgrav_body - cross( wb_bi_body, mass*vm_body ) ) );
@@ -232,6 +240,7 @@ function Airframe_Update(airframe::Aero6DOF,
     airframe_out.position = pos;
 
     ## Updating Transformations
+    quat_bi_body = quat_bi_body/norm(quat_bi_body);
     Tr_bi = QuatToDCM(quat_bi_body);
     Tr_ib = Tr_bi';
     Tr_ne = pos.Tr_ne;
@@ -264,5 +273,8 @@ function Airframe_Update(airframe::Aero6DOF,
     vel = InitVel( vmag, gamma, azimuth, pos );
     airframe_out.velocity = vel;
 
+    println("Gamma_AF = ", gamma);
+    println("Azimuth_AF = ", azimuth);
+    
     return airframe_out;
 end

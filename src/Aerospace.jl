@@ -71,7 +71,8 @@ export
     QuatInit!,
     QuatDerivative,
     QuatToDCM,
-    PauseJulia,
+    Pause,
+    CloseAll,
     
     ## Euler Angle
     ComputeEuler,
@@ -150,6 +151,7 @@ type Aero6DOF
     velocity::Velocity_States
     euler::Euler_Angles
     angle_rates::Angle_Rates
+    accel_meas::Array{Float64,1}
     massprops::MassProps
     quat_bi::Quaternions
     xo::Array{Float64,1}
