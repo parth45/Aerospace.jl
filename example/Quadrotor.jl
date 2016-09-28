@@ -114,7 +114,7 @@ function QuadUpdate(quad::Quadrotor)
     rate_meas = quad_rotor.airframe.angle_rates.wb_bi_body;
     accel_meas = quad_rotor.airframe.accel_meas;
     euler = quad_rotor.airframe.euler;
-    quat_bi = euler, quad_rotor.airframe.quat_bi;
+    quat_bi = quad_rotor.airframe.quat_bi;
     nav_state = NavStates( time, position, velocity, rate, rate_meas, accel_meas, euler, quat_bi );
 
     # Parameter Update

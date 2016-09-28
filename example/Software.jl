@@ -197,8 +197,6 @@ function Autopilot( nav_state::NavStates,
     softwareTM.softwareTM.rcmd = rcmd;
     softwareTM.motorcmd = MotorCmd( w1, w2, w3, w4 );
 
-    Pause()
-
     return softwareTM;
 end
 

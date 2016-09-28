@@ -82,6 +82,8 @@ for i = 1:NN
 
     quad1 = QuadUpdate(quad1);
     time = time + dt;
+
+    Pause();
 end
 
 figure()
