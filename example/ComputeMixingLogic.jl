@@ -3,7 +3,7 @@ using SymPy
 wmotor1 = Sym("wmotor1");
 wmotor2 = Sym("wmotor2");
 wmotor3 = Sym("wmotor3");
-wmotor4 = Sym("wmotor4");
+wmotor4 = Sym("wmotor4"); 
 
 ## Propeller Forces
 keng = 6.11e-3;

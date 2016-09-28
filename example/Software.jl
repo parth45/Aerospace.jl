@@ -22,19 +22,19 @@ function Initialize_SW(time::Float64, DT::Float64, nav_state::NavStates)
 
     ## Motor Cmds
     motorcmd = MotorCmd( zz, zz, zz, zz );
-    
+
     ## Software Telemetry
     swtelem = SoftwareTelem(time, nav_state, zz, zz, zz, zz, zz, zz);
 
     ## Software Message
     swMsg = SoftwareMsg( time, dt, zvec, zz, count, mode, swtelem, motorcmd );
-    
+
     return swMsg;
 end
-    
+
 #######################################################################
 # Flight Control
-@debug function Autopilot( nav_state::NavStates,
+function Autopilot( nav_state::NavStates,
                     acc_cmds::Array{Float64,1},
                     softwareMsg::SoftwareMsg)
 
@@ -54,7 +54,7 @@ end
         0.0   0.0    4.0
     ]; ## kg-m^2
     dt = softwareMsg.dt;
-    
+
     ## Nav Estimates
     vmag = nav_state.velocity.vmag;
     gamma = nav_state.velocity.gamma;
@@ -81,25 +81,25 @@ end
     ## Measurements
     acc_meas_body = nav_state.accel_meas;
     wb_bi_body = nav_state.rate_meas;
-    
+
     ## Rate Meas
     wxmeas = wb_bi_body[1];
     wymeas = wb_bi_body[2];
     wzmeas = wb_bi_body[3];
-    
+
     ## Accel Meas
     axmeas = acc_meas_body[1];
     aymeas = acc_meas_body[2];
     azmeas = acc_meas_body[3];
     println("acc_meas = ",acc_meas_body);
-    
+
     ## Mixing Logic
     Larm = 0.15;
     r1_arm_body = [ Larm*cosd(45); -Larm*sind(45); 0.0];
     r2_arm_body = [ Larm*cosd(45);  Larm*sind(45); 0.0];
     r3_arm_body = [-Larm*cosd(45);  Larm*sind(45); 0.0];
     r4_arm_body = [-Larm*cosd(45); -Larm*sind(45); 0.0];
-    
+
     rx1 = r1_arm_body[1];
     rx2 = r2_arm_body[1];
     rx3 = r3_arm_body[1];
@@ -109,18 +109,18 @@ end
     ry2 = r2_arm_body[2];
     ry3 = r3_arm_body[2];
     ry4 = r4_arm_body[2];
-    
+
     AA = [
         -ry1*keng -ry2*keng -ry3*keng -ry4*keng
          rx1*keng  rx2*keng  rx3*keng  rx4*keng
-        -kmeng     kmeng    -kmeng     kmeng     
+        -kmeng     kmeng    -kmeng     kmeng
         -keng     -keng     -keng     -keng
     ];
 
     A1 = [
-    6.48063364957471e-9  -6.48063364957471e-9  -6.48063364957471e-9  6.48063364957471e-9 
+    6.48063364957471e-9  -6.48063364957471e-9  -6.48063364957471e-9  6.48063364957471e-9
     6.48063364957471e-9  6.48063364957471e-9   -6.48063364957471e-9  -6.48063364957471e-9
-    -1.5e-9               1.5e-9               -1.5e-9                1.5e-9    
+    -1.5e-9               1.5e-9               -1.5e-9                1.5e-9
     -6.11e-8              -6.11e-8              -6.11e-8              -6.11e-8
     ];
 
@@ -128,7 +128,7 @@ end
     axcmd = acc_cmds[1];
     aycmd = acc_cmds[2];
     azcmd = acc_cmds[3];
-    
+
     ## Acceleration Loop
     wn = 1.0*2.0*pi;
     Kp = wn;
@@ -139,15 +139,15 @@ end
     else
         pcmd = Kp*(aycmd - aymeas);
         qcmd = -Kp*(axcmd - axmeas);
-    end               
-    
+    end
+
     println("azcmd = ",azcmd);
     println("azmeas = ",azmeas);
-    
+
     dzdot = Kp*(azcmd - azmeas);
     dz = dz + dt*dzdot;
 
-    if vmag < 50.0 
+    if vmag < 50.0
         heading_cmd = 0.0;
         rcmd = Kp*(heading_cmd - heading);
     else
@@ -155,11 +155,11 @@ end
     end
 
     wbcmd_body = [pcmd;qcmd;rcmd];
-    
+
     ## Rate Loop
     Kpw = 0.3*2.0*pi;
     Kiw = 10.0;
-    
+
     ## Moment Command
     mcmd_body = [0.0;0.0;0.0];
     mcmd_body = Kpw*II*(wbcmd_body - wb_bi_body) + Kiw*eta + cross( wb_bi_body, II*wb_bi_body );
@@ -198,21 +198,21 @@ end
     softwareTM.motorcmd = MotorCmd( w1, w2, w3, w4 );
 
     Pause()
-    
+
     return softwareTM;
 end
 
 
 #######################################################################
 # Software Update
-@debug function Update_SW(motorcmd::MotorCmd, nav_state::NavStates, swMsg::SoftwareMsg)
+function Update_SW(motorcmd::MotorCmd, nav_state::NavStates, swMsg::SoftwareMsg)
 
     swOut = swMsg;
-    
+
     ## Update
     swOut.time = swOut.time + swOut.dt;
     swOut.count = swOut.count + 1;
-        
+
     ## Position and Veloity Command
     latcmd = 0.0;
     loncmd = 0.0;
@@ -242,7 +242,7 @@ end
     acc_cmd_ned = Kp*poserr_ned + Kd*velerr_ned;
 
     acc_cmd_body = Tr_bn*acc_cmd_ned;
-    
+
     ## Autopilot
     swOut = Autopilot( nav_state,
                acc_cmd_body,

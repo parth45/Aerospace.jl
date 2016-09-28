@@ -13,7 +13,6 @@
 ############################################################################
 using PyPlot
 using Aerospace
-using Debug
 include("Quad_Types.jl")
 using Quad_Types
 include("Software.jl")
@@ -21,14 +20,12 @@ include("Quadrotor.jl")
 include("Quad_Forces.jl")
 
 # Closing all Figures
-for i = 1:100
-    close()
-end
+CloseAll();
 
 # Simulation Control
 time = 0.0;
 dt = 0.001;
-tfinal = 10.0;  
+tfinal = 10.0;
 
 ## Number of Sample points
 nn = (tfinal - time)/dt + 1;
@@ -117,4 +114,3 @@ grid
 xlabel("Time (s)")
 ylabel("Motor Speed (rad/s)")
 legend(["Motor 1", "Motor 2", "Motor 3", "Motor 4"]);
-
