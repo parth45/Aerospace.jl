@@ -20,14 +20,14 @@ function Quad_Forces(motor_array::Motors)
     wmotor4 = motor_array.motor4.position;
     
     ## Propeller Forces
-    keng = 6.11e-8;
+    keng = 6.11e-4;
     f1_body = [0;0;-keng*wmotor1^2];
     f2_body = [0;0;-keng*wmotor2^2];
     f3_body = [0;0;-keng*wmotor3^2];
     f4_body = [0;0;-keng*wmotor4^2];
 
     ## Propeller Moments
-    kmeng = 1.5e-9;
+    kmeng = 1.5e-5;
     m1_body = [0;0;-kmeng*wmotor1^2];
     m2_body = [0;0;kmeng*wmotor2^2];
     m3_body = [0;0;-kmeng*wmotor3^2];

@@ -1,4 +1,4 @@
-############################################################################
+2############################################################################
 #
 #  Quadrotor.jl
 #
@@ -83,7 +83,7 @@ function QuadInit( time::Float64, dt::Float64, position_init::WGS_Pos, vel_init:
     motor_array = Motors(motor1, motor2, motor3, motor4);
 
     # Initial Motor Commands
-    zz = 5000.0;
+    zz = 20.0;
     motorCmd = MotorCmd(zz, zz, zz, zz);
 
     ## Software Initialization

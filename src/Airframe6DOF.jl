@@ -186,12 +186,7 @@ function Airframe_Update(airframe::Aero6DOF,
     grav_ned = Tr_nb*grav_body;
     fgrav_body = mass*grav_body;
 
-    println("grav_ned = ", grav_ned);
-    println("mass = ",mass);   
-    
     ## Total Forces in Body Frame
-    println("ftot_body = ",ftot_body);
-    println("fgrav_body = ",fgrav_body);
     acc_meas_body = ftot_body/mass;
     ftot_eci = Tr_ib*ftot_body;
     airframe_out.accel_meas = acc_meas_body;
@@ -273,8 +268,5 @@ function Airframe_Update(airframe::Aero6DOF,
     vel = InitVel( vmag, gamma, azimuth, pos );
     airframe_out.velocity = vel;
 
-    println("Gamma_AF = ", gamma);
-    println("Azimuth_AF = ", azimuth);
-    
     return airframe_out;
 end

@@ -44,15 +44,15 @@ function Autopilot( nav_state::NavStates,
     dz = softwareTM.dz;
 
     ## Constants
-    keng = 6.11e-8;
-    kmeng = 1.5e-9;
+    keng = 6.11e-4;
+    kmeng = 1.5e-5;
     Larm = 0.15; ## m
     mass = 0.5; ## kg
     II = [
         2.32  0.0    0.0
         0.0   2.32   0.0
         0.0   0.0    4.0
-    ]; ## kg-m^2
+    ]*10.e-3; ## kg-m^2
     dt = softwareMsg.dt;
 
     ## Nav Estimates
@@ -67,16 +67,7 @@ function Autopilot( nav_state::NavStates,
     vm_body = Tr_bn*nav_state.velocity.vm_ned;
     alpha = atan2( vm_body[3], vm_body[1] );
     beta = atan2( vm_body[2],vmag );
-
-    println("gamma = ",gamma)
-    println("azimuth = ",azimuth)
-    println("roll = ",roll)
-    println("pitch = ",pitch)
-    println("heading = ",heading)
-    println("beta = ",beta)
-    println("alpha = ",alpha)
-    println("vmag = ",vmag)
-
+    alt = nav_state.wgs_pos.altitude;
 
     ## Measurements
     acc_meas_body = nav_state.accel_meas;
@@ -91,7 +82,6 @@ function Autopilot( nav_state::NavStates,
     axmeas = acc_meas_body[1];
     aymeas = acc_meas_body[2];
     azmeas = acc_meas_body[3];
-    println("acc_meas = ",acc_meas_body);
 
     ## Mixing Logic
     Larm = 0.15;
@@ -130,7 +120,7 @@ function Autopilot( nav_state::NavStates,
     azcmd = acc_cmds[3];
 
     ## Acceleration Loop
-    wn = 1.0*2.0*pi;
+    wn = 0.10*2.0*pi;
     Kp = wn;
 
     if abs(dz) > 1.0
@@ -141,24 +131,26 @@ function Autopilot( nav_state::NavStates,
         qcmd = -Kp*(axcmd - axmeas);
     end
 
-    println("azcmd = ",azcmd);
-    println("azmeas = ",azmeas);
-
-    dzdot = Kp*(azcmd - azmeas);
+    alt_cmd = 1.0;
+    
+#    dzdot = Kp*(azcmd - azmeas);
+    dzdot = 1.5*Kp*(alt_cmd - alt);
     dz = dz + dt*dzdot;
 
-    if vmag < 50.0
+    if vmag < 5000.0
         heading_cmd = 0.0;
         rcmd = Kp*(heading_cmd - heading);
     else
         rcmd = cos(pitch)/cos(roll)*Kp*beta + aymeas*cos(pitch)/(vmag*cos(gamma)*cos(roll)) - wymeas*tan(roll) ;
     end
 
+    println(rcmd)
+
     wbcmd_body = [pcmd;qcmd;rcmd];
 
     ## Rate Loop
     Kpw = 0.3*2.0*pi;
-    Kiw = 10.0;
+    Kiw = 1.0;
 
     ## Moment Command
     mcmd_body = [0.0;0.0;0.0];
@@ -166,20 +158,20 @@ function Autopilot( nav_state::NavStates,
     etadot = wbcmd_body - wb_bi_body;
     eta = eta + dt*etadot;
 
-    println("wb_bi_body = ",wb_bi_body);
-    println("etadot = ",etadot);
-    println("eta = ",eta);
-    println("dzdot = ",dzdot);
-    println("dz = ",dz);
-
     ## Motor Commands
     ff = [mcmd_body; dz];
     cc = AA^-1*ff;
 
-    w1 = sqrt( abs(cc[1]) );
-    w2 = sqrt( abs(cc[2]) );
-    w3 = sqrt( abs(cc[3]) );
-    w4 = sqrt( abs(cc[4]) );
+#    w1 = sqrt( abs(cc[1]) );
+#    w2 = sqrt( abs(cc[2]) );
+#    w3 = sqrt( abs(cc[3]) );
+#    w4 = sqrt( abs(cc[4]) );
+
+    w1 = dz;
+    w2 = dz;
+    w3 = dz;
+    w4 = dz;
+
 
     ## Telemetry
     softwareTM.time = nav_state.time;
