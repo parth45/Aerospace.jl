@@ -37,6 +37,7 @@ export
     
     ## Structures
     Aero6DOF,
+    Aero5DOF,
     QuadControl,
     WGS_Pos,
     Velocity_States,
@@ -57,6 +58,7 @@ export
     TR_EI,
     TR_WB,
     TR_VN,
+    TR_BV,
 
     # Atmosphere
     Atmosphere,
@@ -71,8 +73,11 @@ export
     QuatInit!,
     QuatDerivative,
     QuatToDCM,
+
+    ## Functions
     Pause,
     CloseAll,
+    Bound,
     
     ## Euler Angle
     ComputeEuler,
@@ -88,7 +93,9 @@ export
     InitAngleRates,
     Mass_Props,
     Airframe_Initialize,
+    Airframe5_Initialize,
     Airframe_Update,
+    Airframe5_Update,
 
     ## Interpolation Functions
     interp1,
@@ -157,6 +164,19 @@ type Aero6DOF
     xo::Array{Float64,1}
 end
 
+type Aero5DOF
+    time::Float64
+    dt::Float64
+    position::WGS_Pos
+    velocity::Velocity_States
+    euler::Euler_Angles
+    angle_rates::Angle_Rates
+    accel_meas::Array{Float64,1}
+    mass::Float64
+    quat_bi::Quaternions
+    xo::Array{Float64,1}
+end
+
 type NavStates
     time::Float64
     wgs_pos::WGS_Pos
@@ -184,6 +204,7 @@ end
 include("Utils.jl");
 include("Actuator.jl");
 include("Airframe6DOF.jl");
+include("Airframe5DOF.jl");
 include("Interpolation.jl");
 
 end # module
