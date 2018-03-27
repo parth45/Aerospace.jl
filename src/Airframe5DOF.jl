@@ -13,7 +13,7 @@
 ############################################################################
 
 # Initialize Position
-function InitPos( time, latitude, longitude, altitude )
+function Airframe5DOF( time, latitude, longitude, altitude )
 
     ## Transformation Matrices ECEF, ECI, NED
     Tr_ei = TR_EI(time);
@@ -141,9 +141,9 @@ function Airframe5_Update( airframe::Aero5DOF, ftot_body::Array{Float64,1}
     wb_ei_ecef = wb_ei_eci;
 
     ## Transformation Matrices
-    Tr_ei = airframe.position.Tr_ei;
+    Tr_ei = TR_EI(time);
     Tr_ie = Tr_ei';
-    Tr_ne = airframe.position.Tr_ne;
+    Tr_ne = TR_NE(airframe.position.latitude, airframe.position.longitude)
     Tr_en = Tr_ne';
     Tr_bn = airframe.euler.Tr_bn;
     Tr_nb = Tr_bn';
@@ -168,6 +168,8 @@ function Airframe5_Update( airframe::Aero5DOF, ftot_body::Array{Float64,1}
     Tr_vb = Tr_bv';
     Tr_bi = Tr_bv*Tr_vn*Tr_ne*Tr_ei;
     Tr_ib = Tr_bi';
+    Tr_bn = Tr_bv*Tr_vn;
+    Tr_nb = Tr_bn';
 
     ## Airframe Position
     pos = airframe.position;
