@@ -33,8 +33,8 @@ export
     wgs_finv,
     wgs_ff,
     wgs_bb,
-    wgs_e2,    
-    
+    wgs_e2,
+
     ## Structures
     Aero6DOF,
     Aero5DOF,
@@ -67,7 +67,7 @@ export
     ECEF2LLH,
     LLH2ECEF,
     WGS84_GRAVITY,
-    
+
     ## Quaternion
     QuatInit,
     QuatInit!,
@@ -78,7 +78,7 @@ export
     Pause,
     CloseAll,
     Bound,
-    
+
     ## Euler Angle
     ComputeEuler,
 
@@ -102,7 +102,7 @@ export
     interp2,
     interp3
 
-type WGS_Pos
+mutable struct WGS_Pos
     time::Float64
     latitude::Float64
     longitude::Float64
@@ -113,7 +113,7 @@ type WGS_Pos
     Tr_ne::Array{Float64,2}
 end
 
-type Velocity_States
+mutable struct Velocity_States
     time_sim::Float64
     vmag::Float64
     gamma::Float64
@@ -123,21 +123,21 @@ type Velocity_States
     vm_eci::Array{Float64,1}
 end
 
-type Quaternions
+mutable struct Quaternions
     q0::Float64
     q1::Float64
     q2::Float64
     q3::Float64
 end
 
-type Euler_Angles
+mutable struct Euler_Angles
     roll::Float64
     pitch::Float64
     heading::Float64
     Tr_bn::Array{Float64,2}
-end    
+end
 
-type Angle_Rates
+mutable struct Angle_Rates
     wb_bi_body::Array{Float64,1}
     wb_bn_body::Array{Float64,1}
     wb_ei_eci::Array{Float64,1}
@@ -145,13 +145,13 @@ type Angle_Rates
     wb_ne_eci::Array{Float64,1}
 end
 
-type MassProps
+mutable struct MassProps
     mass::Float64
     II::Array{Float64,2}
     cg::Array{Float64,1}
 end
 
-type Aero6DOF
+mutable struct Aero6DOF
     time::Float64
     dt::Float64
     position::WGS_Pos
@@ -164,7 +164,7 @@ type Aero6DOF
     xo::Array{Float64,1}
 end
 
-type Aero5DOF
+mutable struct Aero5DOF
     time::Float64
     dt::Float64
     position::WGS_Pos
@@ -177,7 +177,7 @@ type Aero5DOF
     xo::Array{Float64,1}
 end
 
-type NavStates
+mutable struct NavStates
     time::Float64
     wgs_pos::WGS_Pos
     velocity::Velocity_States
@@ -188,7 +188,7 @@ type NavStates
     quat::Quaternions
 end
 
-type Actuator
+mutable struct Actuator
     time::Float64
     dt::Float64
     wn::Float64
@@ -206,5 +206,6 @@ include("Actuator.jl");
 include("Airframe6DOF.jl");
 include("Airframe5DOF.jl");
 include("Interpolation.jl");
+using LinearAlgebra
 
 end # module

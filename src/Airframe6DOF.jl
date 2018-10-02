@@ -23,7 +23,7 @@ function InitPos( time, latitude, longitude, altitude )
     ## Position Vectors
     rm_ecef = LLH2ECEF(latitude, longitude, altitude);
     rm_eci = Tr_ie*rm_ecef;
-    
+
     println(altitude);
     ## Populating Position Structure
     position = WGS_Pos(time, latitude, longitude, altitude, rm_ecef, rm_eci, Tr_ei, Tr_ne);
@@ -115,7 +115,7 @@ function Airframe_Initialize( tsim::Float64,
     quat_bi = Quaternions(quat[1], quat[2], quat[3], quat[4] );
 
     zz = [0.0;0.0;0.0];
-    
+
     xo = [ position.rm_eci; velocity.vm_eci; angle_rates.wb_bi_body; quat];
 
     ## Quad Rotor Intialization
@@ -191,7 +191,7 @@ function Airframe_Update(airframe::Aero6DOF,
     acc_meas_body = ftot_body/mass;
     ftot_eci = Tr_ib*ftot_body;
     airframe_out.accel_meas = acc_meas_body;
-    
+
     ## Computing Derivatives
     dx_pos = vm_eci;
     dx_vel = Tr_ib*(1.0/mass*( ftot_body + fgrav_body - cross( wb_bi_body, mass*vm_body ) ) );
@@ -264,8 +264,8 @@ function Airframe_Update(airframe::Aero6DOF,
     vm_ecef = Tr_ei*vm_eci - cross(wb_ei_ecef, pos.rm_ecef);
     vm_ned = pos.Tr_ne*vm_ecef;
     vmag = norm(vm_ned);
-    gamma = atan2( -vm_ned[3], sqrt(vm_ned[1]^2 + vm_ned[2]^2));
-    azimuth = atan2( vm_ned[2], vm_ned[1] );
+    gamma = atan( -vm_ned[3], sqrt(vm_ned[1]^2 + vm_ned[2]^2));
+    azimuth = atan( vm_ned[2], vm_ned[1] );
     vel = InitVel( vmag, gamma, azimuth, pos );
     airframe_out.velocity = vel;
 
