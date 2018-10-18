@@ -270,8 +270,8 @@ function Airframe5_Update( airframe::Aero5DOF, ftot_body::Array{Float64,1}
     vn = vm_ned[1];
     ve = vm_ned[2];
     vd = vm_ned[3];
-    gamma = atan2( -vd, sqrt( vn*vn + ve*ve ) );
-    azimuth = atan2( ve, vn );
+    gamma = atan( -vd, sqrt( vn*vn + ve*ve ) );
+    azimuth = atan( ve, vn );
     Tr_vn = TR_VN(gamma,azimuth);
     vel = Velocity_States(time, vmag, gamma, azimuth, vm_ned, vm_ecef, vm_eci);
 

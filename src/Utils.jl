@@ -198,7 +198,7 @@ function ECEF2LLH(rm_ecef)
   Z = rm_ecef[3];
 
   # Longitude
-  lon = atan2(Y,X);
+  lon = atan(Y,X);
 
   # Eccentricity
   ee = e2*(aa/bb)^2;
@@ -279,8 +279,8 @@ function QuatInit( Tr_bi::Array{Float64,2} )
   t33 = Tr_bi[3,3];
 
   pitch = asin(-t13);
-  heading = atan2(t12,t11);
-  roll = atan2(t23,t33);
+  heading = atan(t12,t11);
+  roll = atan(t23,t33);
 
   q0 = cos(heading/2)*cos(pitch/2)*cos(roll/2) + sin(heading/2)*sin(pitch/2)*sin(roll/2);
   q1 = cos(heading/2)*cos(pitch/2)*sin(roll/2) - sin(heading/2)*sin(pitch/2)*cos(roll/2);
@@ -354,8 +354,8 @@ function ComputeEuler( Tr_bi::Array{Float64,2} )
   t33 = Tr_bi[3,3];
 
   pitch = asin(-t13);
-  heading = atan2(t12,t11);
-  roll = atan2(t23,t33);
+  heading = atan(t12,t11);
+  roll = atan(t23,t33);
 
   euler = [roll; pitch; heading];
 
